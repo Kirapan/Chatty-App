@@ -17,3 +17,12 @@ new WebpackDevServer(webpack(config), {
 
     console.log('Running at http://0.0.0.0:3000');
   });
+
+
+  // const socketServer = new WebSocket(
+  //   "wss://localhost:3001",
+  //   ""
+  // );
+  // socketServer.onopen = function (event) {
+  //   socketServer.send("Client Connected"); 
+  // };
