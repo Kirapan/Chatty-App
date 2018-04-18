@@ -29,6 +29,7 @@ class App extends Component {
   }
   
   _handleNewMessageSubmit = (content) => {
+    console.log("state",this.state);
     const message = {
       username: this.state.currentUser.name,
       content,
@@ -37,8 +38,11 @@ class App extends Component {
     this.socket.send(JSON.stringify(message))
   }
 
-  _handleNameChange = (new) => {
-    this.setState({...this.state.currentUser,{name:new}})
+  _handleNameChange = (value) => {
+    // const newObj = Object.assign({},this.state.currentUser,{name: new})
+    const newObj = { ...this.state.currentUser, name: value};
+    console.log("aa",newObj);
+    this.setState({currentUser:newObj})
   }
 
   render() {
