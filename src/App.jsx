@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
-import uuidv1 from 'uuid/v1';
-
+import Navbar from './Navbar.jsx';
 
 class App extends Component {
 
@@ -11,7 +10,8 @@ class App extends Component {
     super(props);
     this.socket = "";
     this.state = {
-      currentUser: { name: "Bob" }, // optional. if currentUser is not defined, it means the user is Anonymous
+      online:{},
+      currentUser: { name: "Anonymous" }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: []
     }
   }
@@ -19,29 +19,42 @@ class App extends Component {
   componentDidMount() {
     this.socket = new WebSocket("ws://localhost:3001");
     console.log("componentDidMount <App />");
-    console.log("connected to server")
+    this.socket.onopen = (event) => {
+      console.log("Connected to server");
+      this.setState({online: event.data})
+    };
     this.socket.onmessage = this._handleMessageReceived
   }
 
   _handleMessageReceived = ({ data }) => {
     const message = JSON.parse(data)
-    this.setState({ messages: [...this.state.messages, message] })
+    if (message.type === "incomingNotification") {
+      const newNote = [...this.state.messages, message]
+      this.setState({ messages:newNote })
+    } else if(message.type === "incomingMessage") {
+      this.setState({ messages: [...this.state.messages, message] })
+    } else {
+      this.setState({online: message})
+    }
   }
-  
+
   _handleNewMessageSubmit = (content) => {
-    console.log("state",this.state);
     const message = {
       username: this.state.currentUser.name,
       content,
-      id: uuidv1()
+      type: "postMessage"
     }
     this.socket.send(JSON.stringify(message))
   }
 
   _handleNameChange = (value) => {
-    // const newObj = Object.assign({},this.state.currentUser,{name: new})
-    const newObj = { ...this.state.currentUser, name: value};
-    console.log("aa",newObj);
+    const message = {
+      username: value,
+      type: "postNotification",
+      content: `${this.state.currentUser.name} changed their name to ${value}`
+    }
+    this.socket.send(JSON.stringify(message))
+    const newObj = { ...this.state.currentUser, name: message.username };
     this.setState({currentUser:newObj})
   }
 
@@ -49,10 +62,10 @@ class App extends Component {
     console.log("Rending <App/>");
     return (
       <div>
-        <nav className="navbar">
-          <a href="/" className="navbar-brand">Chatty</a>
-        </nav>
-        <MessageList messageList={this.state.messages} messageID={this.state.id} />
+       <Navbar userQty={this.state.online}/>
+        <main className="messages">
+        <MessageList messageList={this.state.messages}/>
+        </main>
         <ChatBar currentUser={this.state.currentUser.name} onNewName={this._handleNameChange} onNewMessageSubmit={this._handleNewMessageSubmit} />
       </div>
     );
