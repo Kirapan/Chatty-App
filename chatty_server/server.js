@@ -54,7 +54,7 @@ wss.on('connection', (ws) => {
               throw new Error ("Invalid Format")
             })
             .then(json => {
-              newMess.content=`<div><p>${regEX[1]}</p><br/><img src="${json.data.image_url}" alt="Your gif"/></div>`
+              newMess.content=`<div><p>${regEX[1]}</p><br/><img class="iamanimage" src="${json.data.image_url}" alt="Your gif"/></div>`
               newMess.type = "incomingMessage"
               client.send(JSON.stringify(newMess));
             })
@@ -65,7 +65,7 @@ wss.on('connection', (ws) => {
             }) 
           } else if (regEX2) {
               const final=newMess.content.replace(regEX2[0],"").trim();
-              newMess.content=`<div><p>${final}</p><br/><img src="${regEX2[0]}" alt="Your image"/></div>`
+              newMess.content=`<div><p>${final}</p><br/><img class="iamanimage" src="${regEX2[0]}" alt="Your image"/></div>`
               newMess.type = "incomingMessage"
               client.send(JSON.stringify(newMess));
           } else {
