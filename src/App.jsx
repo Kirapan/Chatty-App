@@ -15,12 +15,22 @@ class App extends Component {
     }
   }
 
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" })
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
+
   componentDidMount() {
     this.socket = new WebSocket("ws://localhost:3001")
     this.socket.onopen = (event) => {
       console.log("Connected to server");
     };
     this.socket.onmessage = this._handleMessageReceived
+    this.scrollToBottom();
   }
 
   _handleMessageReceived = ({ data }) => {
@@ -46,7 +56,7 @@ class App extends Component {
   }
 
   _handleNameChange = (value) => {
-    if(value !== this.state.currentUser.name) {
+    if (value !== this.state.currentUser.name) {
       const message = {
         username: value,
         type: "postNotification",
@@ -58,6 +68,7 @@ class App extends Component {
     }
   }
 
+
   render() {
     return (
       <div>
@@ -65,6 +76,9 @@ class App extends Component {
         <main className="messages">
           <MessageList messageList={this.state.messages} />
         </main>
+        <div style={{ float: "left", clear: "both" }}
+          ref={(el) => { this.messagesEnd = el; }}>
+        </div>
         <ChatBar currentUser={this.state.currentUser.name} onNewName={this._handleNameChange} onNewMessageSubmit={this._handleNewMessageSubmit} />
       </div>
     );

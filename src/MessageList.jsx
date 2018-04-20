@@ -3,6 +3,8 @@ import Message from './Message.jsx';
 import Notification from './Notification.jsx';
 
 class MessageList extends Component {
+    
+    
     render() {
         const chatMessage = this.props.messageList.map(item => {
             if (item.type === "incomingMessage") {
@@ -14,8 +16,9 @@ class MessageList extends Component {
         return (
             <div>
                 {chatMessage}
-            </div>)
-    }
+            </div>
+            )
+        }
 }
 
 export default MessageList;
