@@ -37,7 +37,7 @@ open http://localhost:3000
 
 ## Screenshots
 
-!["Screenshot of chatty messages]()
+!["Screenshot of chatty messages](https://github.com/Kirapan/Chatty-App/blob/master/docs/App_screen_shot.png)
 
 ## Technical Specifications
 
